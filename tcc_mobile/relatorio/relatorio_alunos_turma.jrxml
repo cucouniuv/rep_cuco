@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="relatorio_alunos_turma" language="groovy" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="9dfd392b-d9e5-43cf-8c51-41e6707c5e0f">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="512"/>
+	<property name="ireport.y" value="20"/>
+	<queryString>
+		<![CDATA[select p.cpf,
+       p.nome as aluno,
+       t.nome as turma,
+       c.nome as curso
+from pessoa as p
+inner join aluno_turma as at
+        on p.id_pessoa = at.id_pessoa
+inner join turma as t
+        on at.id_turma = t.id_turma
+inner join grade_curso as gc
+        on t.id_grade_curso = gc.id_grade_curso
+inner join curso as c
+        on gc.id_curso = c.id_curso
+group by c.id_curso, t.id_turma, p.id_pessoa]]>
+	</queryString>
+	<field name="cpf" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="aluno" class="java.lang.String"/>
+	<field name="turma" class="java.lang.String"/>
+	<field name="curso" class="java.lang.String"/>
+	<group name="curso">
+		<groupExpression><![CDATA[$F{curso}]]></groupExpression>
+		<groupHeader>
+			<band height="14">
+				<textField>
+					<reportElement uuid="dd4a3d6b-6be3-4ca0-ad2b-6bfd58cbefef" x="45" y="0" width="257" height="14"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{curso}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="046c1455-8afc-49a3-b0a9-f9cebc88bf5b" x="0" y="0" width="45" height="14"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Curso:]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+	</group>
+	<group name="turma">
+		<groupExpression><![CDATA[$F{turma}]]></groupExpression>
+		<groupHeader>
+			<band height="14">
+				<staticText>
+					<reportElement uuid="cc11d2c9-6339-400c-bc64-1589e1660466" x="0" y="0" width="45" height="14"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Turma:]]></text>
+				</staticText>
+				<textField>
+					<reportElement uuid="c10c8470-55e5-4760-a632-b90e640bc6d8" x="45" y="0" width="236" height="14"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{turma}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="9"/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="58" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="55ccd729-6672-4702-8263-e4118361be9a" x="0" y="0" width="281" height="15"/>
+				<textElement/>
+				<text><![CDATA[Centro Universitário de União da Vitória - UNIUV]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="94b5df0e-4f56-4b64-ae1b-59bbc123c4f8" x="0" y="15" width="281" height="14"/>
+				<textElement/>
+				<text><![CDATA[CUCO - Controle de horas complementares]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0837dedd-aabc-4390-93fe-812f5df0ed30" x="0" y="44" width="281" height="14"/>
+				<textElement/>
+				<text><![CDATA[Relação de acadêmicos por turma]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement uuid="ebb34703-6c44-40f3-92de-d9848b609dc5" x="472" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="3" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="cdcb13ef-5e05-4209-a5b0-14b4f8507ffb" x="0" y="0" width="100" height="20"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[CPF]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="73d487c8-ddfe-4fc5-89ee-10fa3bf59604" x="100" y="0" width="100" height="20"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Acadêmico]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="13" splitType="Stretch">
+			<textField>
+				<reportElement uuid="05a436f9-145b-4f4d-a920-59415dd8053e" x="0" y="0" width="100" height="13"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{cpf}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="420860b0-5808-4385-bd4b-95bfab2e7b89" x="100" y="0" width="323" height="13"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{aluno}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

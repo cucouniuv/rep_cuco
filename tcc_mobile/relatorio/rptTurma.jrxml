@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rptTurma" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="22473dcb-b708-4acb-aceb-c67d12db7434">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="170"/>
+	<property name="ireport.y" value="0"/>
+	<queryString>
+		<![CDATA[select t.*,
+       gc.total_horas,
+       gc.validade_inicio,
+       gc.validade_termino,
+       c.nome as nome_curso
+from turma as t
+inner join grade_curso as gc
+		on (t.id_grade_curso = gc.id_grade_curso)
+inner join curso as c
+		on (gc.id_curso = c.id_curso)]]>
+	</queryString>
+	<field name="id_turma" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="id_grade_curso" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="nome" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="data_inicio" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="data_termino" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="senha_matricula" class="java.lang.String">
+		<fieldDescription><![CDATA[senha para liberar matricula para o aluno tipo IG10]]></fieldDescription>
+	</field>
+	<field name="total_horas" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="validade_inicio" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="validade_termino" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="nome_curso" class="java.lang.String"/>
+	<group name="Curso">
+		<groupExpression><![CDATA[$F{nome_curso}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<textField>
+					<reportElement uuid="644c9baa-d163-4f6b-9be2-7f172b8515fc" x="0" y="0" width="207" height="20"/>
+					<textElement>
+						<font size="12" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{nome_curso}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="50"/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="86" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="01b42568-80be-42dc-8b26-bc48a3308f2d" x="9" y="56" width="145" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[RELATÓRIO DE TURMAS]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement uuid="4a4d38bf-65ae-40d1-a5dd-44f387a18318" x="455" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="5bf7f803-d4ab-4a6c-a76a-493c6c3609a3" x="0" y="85" width="555" height="1"/>
+			</line>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="0ae6a4ba-a941-4f1b-83dd-5430f258c0f0" x="0" y="0" width="72" height="20"/>
+				<textElement/>
+				<text><![CDATA[Código turma]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="736ca257-98f5-4b0e-86cf-8ce557e885da" x="72" y="0" width="159" height="20"/>
+				<textElement/>
+				<text><![CDATA[Nome turma]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2be2b443-a592-4e7e-9f70-fed833918f2f" x="231" y="0" width="77" height="20"/>
+				<textElement/>
+				<text><![CDATA[Data de início]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="96bf40a4-ad1a-4bb8-8363-9c31340aa599" x="308" y="0" width="83" height="20"/>
+				<textElement/>
+				<text><![CDATA[Data de término]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5f3c1e92-9490-4b56-b75d-24aa486d0682" x="391" y="0" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Total de horas]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement uuid="8cc14f47-d05b-418a-a5dc-dcc3e8f8e732" x="0" y="0" width="72" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{id_turma}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="c6335323-eefe-4ffd-bd5e-e5f02b818aa9" x="72" y="0" width="159" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="40699b9b-2f0c-4544-a629-6c58e4ab169b" x="231" y="0" width="77" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{data_inicio}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="fe19804a-f80d-4a43-b073-cc146e62f6d0" x="308" y="0" width="83" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{data_termino}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="30b197bc-041f-4780-b00d-0b36f7d90f4b" x="391" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{total_horas}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch">
+			<textField>
+				<reportElement uuid="1fa65c11-2ba4-4cb8-ae92-efd545963719" x="455" y="34" width="100" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

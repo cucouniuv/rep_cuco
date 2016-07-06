@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="relatorio_comprovante_entrega" language="groovy" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ebd77343-4b1a-4194-96c1-031f63200359">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="161"/>
+	<parameter name="pid_lancamento" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select concat('Declaramos que recebemos os arquivos físicos do evento ', e.descricao ,', realizado pelo(a) acadêmico(a) ', p.nome, ', portador(a) do CPF ', p.cpf, ', matriculado(a) na turma de ', t.nome, ' do curso de ', c.nome, '.') as decla,
+       l.id_lancamento,
+       l.id_pessoa,
+       l.id_turma,
+       l.status,
+       l.observacao,
+       l.total_horas,
+       p.nome as aluno,
+       p.cpf,
+       t.nome as turma,
+       c.nome as curso,
+       e.descricao as evento,
+       date_format(now(), '%d/%m/%Y %H:%i') as data,
+       date_format(l.data_lancamento, '%d/%m/%Y %H:%i') as data_lancamento,
+       date_format(l.data_inicio_evento, '%d/%m/%Y %H:%i') as data_inicio_evento,
+       date_format(l.data_termino_evento, '%d/%m/%Y %H:%i') as data_termino_evento,
+       date_format(l.data_arquivamento, '%d/%m/%Y %H:%i') as data_arquivamento
+from lancamento as l
+inner join pessoa as p
+        on (l.id_pessoa = p.id_pessoa)
+inner join turma as t
+        on (l.id_turma = t.id_turma)
+inner join grade_evento as ge
+        on (l.id_grade_evento = ge.id_grade_evento)
+inner join grade_curso as gc
+        on (ge.id_grade_curso = gc.id_grade_curso)
+inner join evento as e
+        on (ge.id_evento = e.id_evento)
+inner join curso as c
+        on (gc.id_curso = c.id_curso)
+where l.status = 'A'
+      and l.id_lancamento = $P{pid_lancamento}]]>
+	</queryString>
+	<field name="decla" class="java.lang.String"/>
+	<field name="id_lancamento" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="id_pessoa" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="id_turma" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="status" class="java.lang.String">
+		<fieldDescription><![CDATA[N - Não avaliado
+A - Aprovado
+R - Rejeitado
+
+]]></fieldDescription>
+	</field>
+	<field name="observacao" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="total_horas" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="aluno" class="java.lang.String"/>
+	<field name="cpf" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="turma" class="java.lang.String"/>
+	<field name="curso" class="java.lang.String"/>
+	<field name="evento" class="java.lang.String"/>
+	<field name="data" class="java.lang.String"/>
+	<field name="data_lancamento" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="data_inicio_evento" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="data_termino_evento" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="data_arquivamento" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="030c426d-ee6c-4e92-bc57-f2971602fbca" x="0" y="0" width="239" height="13"/>
+				<textElement/>
+				<text><![CDATA[Centro Universitário de União da Vitória - UNIUV]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="774e147d-407d-49e8-bf6e-51806f6187ab" x="0" y="13" width="239" height="13"/>
+				<textElement/>
+				<text><![CDATA[CUCO - Controle de horas complementares]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="4e61d423-4eaa-4753-b72f-03eeda93a296" x="439" y="0" width="133" height="13"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{data}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="dcc0eb65-363e-4b08-b07e-dc57b9627d47" x="0" y="0" width="572" height="20"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[COMPROVANTE DE ENTREGA DE DOCUMENTOS]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="158" splitType="Stretch">
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="0d43c800-5f33-4462-b3d3-5b951a72fe09" stretchType="RelativeToBandHeight" x="0" y="0" width="572" height="36"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{decla}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="7808e241-38cf-4632-a06e-3deb3015d22f" x="0" y="36" width="100" height="13"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Detalhes:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="9d6dc08f-bbad-43cf-a8e2-a18be4f5ab76" x="0" y="49" width="75" height="12"/>
+				<textElement/>
+				<text><![CDATA[Código:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="2270155d-f196-4679-89d9-e08ae2258a9b" x="75" y="49" width="100" height="12"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{id_lancamento}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy HH:mm:ss">
+				<reportElement uuid="ec79f97f-80e3-4ddd-b70d-81225855cbd9" x="75" y="61" width="112" height="12"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{data_lancamento}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="8728348a-d698-47c1-b58b-483e3c9a69a7" x="0" y="61" width="75" height="12"/>
+				<textElement/>
+				<text><![CDATA[Lançado em:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="799e98c7-a4cd-4017-807a-586afa5013b2" x="0" y="85" width="139" height="13"/>
+				<textElement/>
+				<text><![CDATA[Data de início do evento:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="d8a3afbc-36f7-4c66-8e10-d3225ec5c4d1" x="139" y="85" width="171" height="13"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{data_inicio_evento}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="2f87356a-1ddd-4b9f-9270-0d589f08dcc1" x="0" y="98" width="139" height="13"/>
+				<textElement/>
+				<text><![CDATA[Data de término do evento:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="e224930c-49be-492f-81c4-a3040756ab71" x="139" y="98" width="171" height="13"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{data_termino_evento}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="ea04268e-de66-4560-90ac-e998308d50e1" x="139" y="111" width="100" height="13"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{total_horas}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="1bab0e61-859d-4468-933e-08790aee592e" x="0" y="111" width="139" height="13"/>
+				<textElement/>
+				<text><![CDATA[Quantidade de horas:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="8838f443-46bc-4f01-9cc7-eaad133e7bd7" x="139" y="124" width="433" height="25"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{observacao}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="845a09eb-5121-435b-946c-86a5b41a9fa2" x="0" y="124" width="139" height="12"/>
+				<textElement/>
+				<text><![CDATA[Observação:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b49c1f2d-519d-42f6-a508-17d635228ab9" x="0" y="73" width="75" height="12"/>
+				<textElement/>
+				<text><![CDATA[Arquivado em:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="d5aa0408-db16-46e1-b1b6-b0ce6d12dba7" x="75" y="73" width="112" height="12"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{data_arquivamento}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="66" splitType="Stretch">
+			<line>
+				<reportElement uuid="13f80342-9f54-4979-84d2-af0978170da9" x="310" y="45" width="245" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="5fa96139-3229-4ce3-9390-42eee5fc5841" x="310" y="46" width="245" height="20"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Assinatura do orientador]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="06611578-34aa-481d-b2c9-1b8c91fd10a1" x="18" y="45" width="245" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="b0770a8c-b562-4bdf-8728-6316bd8a381f" x="18" y="46" width="245" height="19"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Assinatura do acadêmico]]></text>
+			</staticText>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

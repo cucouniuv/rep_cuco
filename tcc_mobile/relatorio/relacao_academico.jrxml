@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="relacao de academicos" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="22473dcb-b708-4acb-aceb-c67d12db7434">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="133"/>
+	<property name="ireport.y" value="0"/>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<subDataset name="Table Dataset 1" uuid="c3eac9cc-21ca-4e39-84bc-622e7690a59b"/>
+	<parameter name="par_codigo_inicio" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[0]]></defaultValueExpression>
+	</parameter>
+	<parameter name="par_codigo_termino" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[99999]]></defaultValueExpression>
+	</parameter>
+	<parameter name="par_codigo_turma" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[0]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select distinct
+    p.nome,
+    p.cpf,
+    p.email,
+    p.telefone,
+    p.num_matricula_aluno,
+    t.nome as turma,
+    gc.total_horas as horas_exigidas,
+    date_format(now(), '%d/%m/%Y %H:%i') as data,
+    (select
+        sum(l.total_horas)
+    from
+        lancamento as l
+    where
+        l.status = 'N' and l.id_pessoa = p.id_pessoa and l.id_turma = t.id_turma) as avaliacao,
+    (select
+        sum(l.total_horas)
+    from
+        lancamento as l
+    where
+        l.status = 'D' and l.id_pessoa = p.id_pessoa and l.id_turma = t.id_turma) as documentacao,
+    (select
+        sum(l.total_horas)
+    from
+        lancamento as l
+    where
+        l.status = 'A' and l.id_pessoa = p.id_pessoa and l.id_turma = t.id_turma) as aprovado,
+    (select
+        sum(l.total_horas)
+    from
+        lancamento as l
+    where
+        l.status = 'R' and l.id_pessoa = p.id_pessoa and l.id_turma = t.id_turma) as reprovado,
+(select
+        (gc.total_horas-coalesce(sum(coalesce(l.total_horas,0)),0))
+    from
+        lancamento as l
+    where
+        l.status = 'A' and l.id_pessoa = p.id_pessoa and l.id_turma = t.id_turma) as restantes
+from
+    pessoa as p
+        inner join
+    aluno_turma as at ON (p.id_pessoa = at.id_pessoa)
+        inner join
+    turma as t ON (at.id_turma = t.id_turma)
+        inner join
+    grade_curso as gc ON (t.id_grade_curso = gc.id_grade_curso)
+where  p.tipo like '%l%'
+       and (p.id_pessoa between $P{par_codigo_inicio} and $P{par_codigo_termino})
+       and at.id_turma = $P{par_codigo_turma}
+order by p.nome]]>
+	</queryString>
+	<field name="nome" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="cpf" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="email" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="telefone" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="num_matricula_aluno" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="turma" class="java.lang.String"/>
+	<field name="horas_exigidas" class="java.math.BigDecimal"/>
+	<field name="data" class="java.lang.String"/>
+	<field name="avaliacao" class="java.math.BigDecimal"/>
+	<field name="documentacao" class="java.math.BigDecimal"/>
+	<field name="aprovado" class="java.math.BigDecimal"/>
+	<field name="reprovado" class="java.math.BigDecimal"/>
+	<field name="restantes" class="java.math.BigDecimal"/>
+	<variable name="falta" class="java.lang.String"/>
+	<group name="turma">
+		<groupExpression><![CDATA[$F{turma}]]></groupExpression>
+		<groupHeader>
+			<band height="13">
+				<textField>
+					<reportElement uuid="44c1bc68-871b-402f-8304-f6b02f9253aa" x="60" y="0" width="235" height="13"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{turma}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="635f5f59-1f92-4bd9-81c4-b342b755d6b2" x="0" y="0" width="60" height="13"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Turma:]]></text>
+				</staticText>
+				<textField>
+					<reportElement uuid="b064fa51-2230-414f-89ca-dbcaa04d0095" x="378" y="0" width="100" height="13"/>
+					<textElement textAlignment="Right"/>
+					<textFieldExpression><![CDATA[$F{horas_exigidas}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="1971542a-68e9-43c3-9bf8-9e2219c3c0ec" x="295" y="0" width="83" height="13"/>
+					<textElement/>
+					<text><![CDATA[Horas exigidas:]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="15"/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="65" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="01b42568-80be-42dc-8b26-bc48a3308f2d" x="0" y="26" width="308" height="13"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Relação de acadêmicos por turma]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a3e81480-6efc-448a-8e5d-bad3bf187af0" x="0" y="0" width="308" height="13"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Centro Universitário de União da Vitória - UNIUV]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a8e8460a-196d-40b4-95d6-43ac63a80db0" x="0" y="13" width="308" height="13"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[CUCO - Controle de horas complementares]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="80acd763-5122-493d-b52a-585f426752d6" x="430" y="0" width="125" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{data}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="13" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="1c229f8c-5513-431f-9d93-d8a24ba5bd54" x="0" y="0" width="100" height="13"/>
+				<textElement/>
+				<text><![CDATA[Nome]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="cbcf52a9-cb00-47cf-9b30-14796504dd5c" x="219" y="0" width="76" height="13"/>
+				<textElement/>
+				<text><![CDATA[CPF]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="58ba066e-be02-4622-8e5d-fe8a1d2dcfa4" x="295" y="0" width="122" height="13"/>
+				<textElement/>
+				<text><![CDATA[E-mail]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="36b7f7ce-8084-4f67-b9f8-66440ac5867c" x="417" y="0" width="67" height="13"/>
+				<textElement/>
+				<text><![CDATA[Telefone]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b8016bf5-25e1-4dbf-9c14-c5db7ed72cf8" x="484" y="0" width="71" height="13"/>
+				<textElement/>
+				<text><![CDATA[Matrícula]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="76" splitType="Stretch">
+			<textField>
+				<reportElement uuid="963f052d-12e8-493b-8a6c-ffd625707a32" x="0" y="0" width="219" height="13"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="11214137-f401-4bf9-89e4-1ac42508db9a" x="219" y="0" width="76" height="13"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{cpf}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="ed59729e-ffdb-4117-ac2f-37147227efdb" x="295" y="0" width="122" height="13"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{email}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="1d1a9874-0b5a-4ec8-b010-98705c63ebe4" x="417" y="0" width="67" height="13"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{telefone}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="c1cd8ab2-cf6d-448a-9040-73fc6ea612a2" x="484" y="0" width="71" height="13"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{num_matricula_aluno}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="53826dca-c378-492a-99c2-f1ae49884fe2" x="18" y="13" width="138" height="13"/>
+				<textElement/>
+				<text><![CDATA[Horas aguardando avaliação:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="c04e3517-ca1f-4710-98c4-fde54e4540af" x="182" y="13" width="100" height="13"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{avaliacao}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="050ffebf-fee1-4521-a6b7-644c7d59b8d4" x="18" y="26" width="164" height="13"/>
+				<textElement/>
+				<text><![CDATA[Horas aguardando documentação:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="d7b55103-460b-435b-8973-7dacdb59104d" x="182" y="26" width="100" height="13"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{documentacao}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="27963e20-91e3-4005-9a94-c0497bda3305" x="18" y="40" width="100" height="13"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Horas aprovadas:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="54684872-adfd-4004-8856-0c23b9798a58" x="182" y="39" width="100" height="14"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{aprovado}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="04052109-3ced-472b-8a8c-4ec965d2bbe1" x="18" y="53" width="100" height="13"/>
+				<textElement verticalAlignment="Top">
+					<font isStrikeThrough="false"/>
+				</textElement>
+				<text><![CDATA[Horas reprovadas:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="bd5c734b-5364-4140-aeaf-dfad8ecbf458" x="182" y="53" width="100" height="13"/>
+				<textElement textAlignment="Right" verticalAlignment="Top">
+					<font isStrikeThrough="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{reprovado}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="82704022-1516-457a-a4bc-9f49a87f5d8b" x="295" y="46" width="122" height="20"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[Horas restantes:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="46c4f464-a493-44d5-b066-7a9b1926e797" x="417" y="46" width="61" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{restantes}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch">
+			<textField>
+				<reportElement uuid="1fa65c11-2ba4-4cb8-ae92-efd545963719" x="455" y="34" width="100" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

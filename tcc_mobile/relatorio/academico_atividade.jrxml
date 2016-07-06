@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="academico_atividade" language="groovy" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="d1c93da8-3c8e-454a-99f7-c047366d949e">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="par_id_turma" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="par_id_pessoa" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select
+    l.*,
+    (case l.status
+        when 'N' then 'Aguardando avaliação'
+        when 'D' then 'Aguardando documentação a ser arquivada'
+        when 'A' then 'Aprovado'
+        when 'R' then 'Rejeitado'
+    end) as situacao,
+    t.nome as turma,
+    e.descricao as evento,
+    p.nome as pessoa,
+    date_format(now(), '%d/%m/%Y %H:%i') as data_atual,
+    (select
+        sum(l.total_horas)
+    from
+        lancamento as l
+    where
+        l.status = 'N' and l.id_pessoa = p.id_pessoa and l.id_turma = t.id_turma) as avaliacao,
+    (select
+        sum(l.total_horas)
+    from
+        lancamento as l
+    where
+        l.status = 'D' and l.id_pessoa = p.id_pessoa and l.id_turma = t.id_turma) as documentacao,
+    (select
+        sum(l.total_horas)
+    from
+        lancamento as l
+    where
+        l.status = 'A' and l.id_pessoa = p.id_pessoa and l.id_turma = t.id_turma) as aprovado,
+    (select
+        sum(l.total_horas)
+    from
+        lancamento as l
+    where
+        l.status = 'R' and l.id_pessoa = p.id_pessoa and l.id_turma = t.id_turma) as reprovado,
+    (select
+        (gc.total_horas-coalesce(sum(coalesce(l.total_horas, 0)), 0))
+    from
+        lancamento as l
+    where
+        l.status = 'A' and l.id_pessoa = p.id_pessoa and l.id_turma = t.id_turma) as restantes
+from
+    lancamento as l
+        inner join
+    grade_evento as ge ON (l.id_grade_evento = ge.id_grade_evento)
+        inner join
+    evento as e ON (ge.id_evento = e.id_evento)
+        inner join
+    turma as t ON (l.id_turma = t.id_turma)
+        inner join
+    pessoa as p ON (l.id_pessoa = p.id_pessoa)
+        inner join
+    grade_curso as gc ON (t.id_grade_curso = gc.id_grade_curso)
+where
+    (t.id_turma = $P{par_id_turma})
+and
+    (l.id_pessoa =  $P{par_id_pessoa})
+order by situacao]]>
+	</queryString>
+	<field name="id_lancamento" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="id_pessoa" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="id_turma" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="id_grade_evento" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="id_usuario_lancamento" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="data_lancamento" class="java.sql.Timestamp">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="data_inicio_evento" class="java.sql.Timestamp">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="data_termino_evento" class="java.sql.Timestamp">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="total_horas" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="status" class="java.lang.String">
+		<fieldDescription><![CDATA[N - Não avaliado
+A - Aprovado
+R - Rejeitado
+
+]]></fieldDescription>
+	</field>
+	<field name="observacao" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="caminho_certificado_frente" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="caminho_certificado_verso" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="data_arquivamento" class="java.sql.Timestamp">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="situacao" class="java.lang.String"/>
+	<field name="turma" class="java.lang.String"/>
+	<field name="evento" class="java.lang.String"/>
+	<field name="pessoa" class="java.lang.String"/>
+	<field name="data_atual" class="java.lang.String"/>
+	<field name="avaliacao" class="java.math.BigDecimal"/>
+	<field name="documentacao" class="java.math.BigDecimal"/>
+	<field name="aprovado" class="java.math.BigDecimal"/>
+	<field name="reprovado" class="java.math.BigDecimal"/>
+	<field name="restantes" class="java.math.BigDecimal"/>
+	<variable name="SOMA_TOTAL_HORA" class="java.lang.Float" resetType="Group" resetGroup="Pessoa" calculation="Sum">
+		<variableExpression><![CDATA[$F{total_horas}]]></variableExpression>
+	</variable>
+	<group name="Pessoa">
+		<groupExpression><![CDATA[$F{id_pessoa}]]></groupExpression>
+		<groupHeader>
+			<band height="13">
+				<staticText>
+					<reportElement uuid="609dc545-f607-4157-9e77-36d708155541" x="1" y="0" width="56" height="13"/>
+					<textElement>
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Acadêmico:]]></text>
+				</staticText>
+				<textField>
+					<reportElement uuid="cfd8580a-3d4d-4b68-a277-22aff39d4532" x="57" y="0" width="55" height="13"/>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{id_pessoa}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="b7dcb67a-5ff0-4514-8e3a-e463c2acf508" x="112" y="0" width="264" height="13"/>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{pessoa}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="52">
+				<textField>
+					<reportElement uuid="f81382f9-f4a5-4ac3-b769-26dfb32a4fd1" x="200" y="0" width="100" height="13"/>
+					<textElement textAlignment="Right"/>
+					<textFieldExpression><![CDATA[$F{avaliacao}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="549cbf5b-1107-441a-8bf6-ddd3581d7338" x="1" y="0" width="199" height="13"/>
+					<textElement/>
+					<text><![CDATA[Total de horas aguardando avaliação:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="bed28862-f537-4f29-b36c-f5a5945f70e9" x="1" y="13" width="199" height="13"/>
+					<textElement/>
+					<text><![CDATA[Total de horas aguardando documentação:]]></text>
+				</staticText>
+				<textField>
+					<reportElement uuid="5c187b62-3944-4a58-bf8c-8429109a92d1" x="200" y="13" width="100" height="13"/>
+					<textElement textAlignment="Right"/>
+					<textFieldExpression><![CDATA[$F{documentacao}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="8736dbb1-f906-482f-8e8d-652a7eab79be" x="1" y="26" width="199" height="13"/>
+					<textElement/>
+					<text><![CDATA[Total de horas aprovadas:]]></text>
+				</staticText>
+				<textField>
+					<reportElement uuid="13288033-240c-4ff7-896b-d6e11a72b340" x="200" y="26" width="100" height="13"/>
+					<textElement textAlignment="Right"/>
+					<textFieldExpression><![CDATA[$F{aprovado}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="f7e3d64f-9686-4a2c-b216-4c44a46f873b" x="201" y="39" width="100" height="13"/>
+					<textElement textAlignment="Right"/>
+					<textFieldExpression><![CDATA[$F{reprovado}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="38ebecfa-ab2a-441f-907d-c45e288b0879" x="1" y="39" width="200" height="13"/>
+					<textElement/>
+					<text><![CDATA[Total de horas reprovadas:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="f71e50f5-4691-4e45-8600-6875133a3f5c" x="301" y="32" width="162" height="20"/>
+					<textElement textAlignment="Right" verticalAlignment="Bottom">
+						<font size="14"/>
+					</textElement>
+					<text><![CDATA[Total de horas restantes:]]></text>
+				</staticText>
+				<textField>
+					<reportElement uuid="4b4f29f8-b695-4269-b27b-ca2219dc25d3" x="463" y="32" width="100" height="20"/>
+					<textElement textAlignment="Right" verticalAlignment="Bottom">
+						<font size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{restantes}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="7" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="54" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="f27cb309-31b4-45d0-b26c-26e7ee2fa619" x="0" y="13" width="267" height="13"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CUCO - Controle de horas complementares]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="31bdade1-74de-4f19-b9c7-c7f18ea4b185" x="0" y="0" width="267" height="13"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Centro Universitário de União da Vitória - UNIUV]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5cfece8a-b854-42b5-a930-ed7b1202ead9" x="1" y="26" width="266" height="14"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Relação de horas complementares]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="8f827eef-471a-486f-89ec-fae51c241026" x="454" y="0" width="118" height="13"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{data_atual}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="13" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="b61f1ff5-cd02-45cc-bc20-1ba9c1d1e575" x="1" y="0" width="56" height="13"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Lançamento]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="59456fbd-e54a-4cde-9aa1-f53d798f0a85" x="376" y="0" width="196" height="13"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Situação]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="74f78ba1-ce06-4f8d-b698-750c276f0b63" x="147" y="0" width="54" height="13"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Total horas]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a38cc947-33d3-485f-9154-65f31b7a174f" x="57" y="0" width="90" height="13"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Data de lançamento]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="db2757ac-de66-4682-b3f3-73fd8f59bf05" x="201" y="0" width="100" height="13"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Evento]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="13" splitType="Stretch">
+			<textField>
+				<reportElement uuid="9b27d7a6-3b4e-4fa3-b4cf-bc3f243d9f56" x="1" y="0" width="56" height="13"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{id_lancamento}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="633f77ec-8bb1-4ca6-8d0a-2836a51db39f" x="376" y="0" width="196" height="13"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{situacao}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="eeee981f-1547-4828-8e2d-235ad95922a8" x="147" y="0" width="54" height="13"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{total_horas}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement uuid="9ea76599-a02a-4301-be24-101f69a9dd8c" x="57" y="0" width="90" height="13"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{data_lancamento}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="251e1773-2ca6-4ae6-8f40-f00befab762b" x="201" y="0" width="175" height="13"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{evento}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="12" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="13" splitType="Stretch">
+			<textField>
+				<reportElement uuid="d4f394ca-b68f-49f1-a27b-44a45888b217" x="472" y="0" width="100" height="13"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

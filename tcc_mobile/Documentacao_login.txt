@@ -1,0 +1,9 @@
+Tela de login
+
+Validação com CPF e senha, pois não tem nenhuma base na universidade que eu possa reaproveitar os cadastros do acadêmicos.
+
+Caso seja um CPF que não exista na base, abrirá a tela de cadastro do acadêmico.
+Se já constar na base, validará se é um acadêmico, orientador ou administrador.
+Após a validação entrará ou não no sistema.
+Terá a opção de esqueci minha senha, pois existem usuários que necessitam desta opção.
+

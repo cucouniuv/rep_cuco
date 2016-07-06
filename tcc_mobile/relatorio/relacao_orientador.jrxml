@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="relacao de orientadores" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="22473dcb-b708-4acb-aceb-c67d12db7434">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="75"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="par_codigo_inicio" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[0]]></defaultValueExpression>
+	</parameter>
+	<parameter name="par_codigo_termino" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[99999]]></defaultValueExpression>
+	</parameter>
+	<parameter name="par_codigo_turma" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[0]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select distinct p.nome,
+       p.cpf,
+       p.email,
+       p.telefone,
+       t.nome as turma,
+       date_format(now(), '%d/%m/%Y %H:%i') as data
+from pessoa as p
+inner join professor_turma as pt
+        on (p.id_pessoa = pt.id_pessoa)
+inner join turma as t
+        on (pt.id_turma = t.id_turma)
+where  p.tipo like '%p%'
+       and (p.id_pessoa between $P{par_codigo_inicio} and $P{par_codigo_termino})
+       and pt.id_turma = $P{par_codigo_turma}
+order by p.nome]]>
+	</queryString>
+	<field name="nome" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="cpf" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="email" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="telefone" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="turma" class="java.lang.String"/>
+	<field name="data" class="java.lang.String"/>
+	<group name="turma">
+		<groupExpression><![CDATA[$F{turma}]]></groupExpression>
+		<groupHeader>
+			<band height="13">
+				<textField>
+					<reportElement uuid="44c1bc68-871b-402f-8304-f6b02f9253aa" x="60" y="0" width="295" height="13"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{turma}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="635f5f59-1f92-4bd9-81c4-b342b755d6b2" x="0" y="0" width="60" height="13"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Turma:]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="15"/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="65" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="01b42568-80be-42dc-8b26-bc48a3308f2d" x="0" y="26" width="308" height="13"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Relação de orientadores por turma]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a3e81480-6efc-448a-8e5d-bad3bf187af0" x="0" y="0" width="308" height="13"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Centro Universitário de União da Vitória - UNIUV]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a8e8460a-196d-40b4-95d6-43ac63a80db0" x="0" y="13" width="308" height="13"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[CUCO - Controle de horas complementares]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="ed6f6887-87ea-46da-ba2d-d029dbc639fc" x="455" y="0" width="100" height="13"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{data}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="13" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="1c229f8c-5513-431f-9d93-d8a24ba5bd54" x="0" y="0" width="100" height="13"/>
+				<textElement/>
+				<text><![CDATA[Nome]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="cbcf52a9-cb00-47cf-9b30-14796504dd5c" x="219" y="0" width="76" height="13"/>
+				<textElement/>
+				<text><![CDATA[CPF]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="58ba066e-be02-4622-8e5d-fe8a1d2dcfa4" x="295" y="0" width="122" height="13"/>
+				<textElement/>
+				<text><![CDATA[E-mail]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="36b7f7ce-8084-4f67-b9f8-66440ac5867c" x="417" y="0" width="67" height="13"/>
+				<textElement/>
+				<text><![CDATA[Telefone]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="13" splitType="Stretch">
+			<textField>
+				<reportElement uuid="963f052d-12e8-493b-8a6c-ffd625707a32" x="0" y="0" width="219" height="13"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="11214137-f401-4bf9-89e4-1ac42508db9a" x="219" y="0" width="76" height="13"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{cpf}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="ed59729e-ffdb-4117-ac2f-37147227efdb" x="295" y="0" width="122" height="13"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{email}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="1d1a9874-0b5a-4ec8-b010-98705c63ebe4" x="417" y="0" width="67" height="13"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{telefone}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch">
+			<textField>
+				<reportElement uuid="1fa65c11-2ba4-4cb8-ae92-efd545963719" x="455" y="34" width="100" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>
